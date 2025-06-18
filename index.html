@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Forge Fitness Hub</title>
+
+    <!-- Google Fonts: Baloo Bhai 2 for consistent typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for modern icons (phone, envelope, map, social media, menu toggles) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Tailwind CSS CDN for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind CSS Custom Configuration for extending default theme and adding animations -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        balooBhai2: ['"Baloo Bhai 2"', 'cursive'],
+                    },
+                    colors: {
+                        'blue-accent': '#00BFFF', /* Primary accent color */
+                        'dark-bg': '#0F172A',     /* Very dark background */
+                        'light-text': '#E2E8F0',  /* Light text color for readability */
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        pulseOutline: {
+                            '0%, 100%': { 'box-shadow': '0 0 0 0 rgba(59, 130, 246, 0.7)' },
+                            '50%': { 'box-shadow': '0 0 0 10px rgba(59, 130, 246, 0)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        textRise: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        fadeInUp: 'fadeInUp 0.8s ease-out forwards',
+                        popIn: 'popIn 0.6s ease-out forwards',
+                        pulseOutline: 'pulseOutline 2s infinite',
+                        wiggle: 'wiggle 1s ease-in-out infinite',
+                        slideInLeft: 'slideInLeft 0.7s ease-out forwards',
+                        slideInRight: 'slideInRight 0.7s ease-out forwards',
+                        float: 'float 3s ease-in-out infinite',
+                        textRise: 'textRise 1s ease-out forwards',
+                    }
+                },
+            },
+        };
+    </script>
+
+    <!-- Custom Styles using Tailwind's @apply directives for reusable components -->
+    <style>
+        /* Base styles for the body to ensure full screen coverage and responsive overflow */
+        body {
+            font-family: 'Baloo Bhai 2', cursive;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevents horizontal scrolling caused by animations or off-screen elements */
+            @apply bg-dark-bg text-light-text antialiased relative min-h-screen; /* Apply core Tailwind base styles */
+        }
+
+        /* Reusable styles for primary and secondary buttons */
+        .btn-primary, .btn-secondary {
+            @apply px-6 py-3 rounded-xl font-bold text-lg cursor-pointer;
+            @apply transition-all duration-300 ease-in-out; /* Smooth transitions for hover effects */
+            @apply shadow-lg; /* Adds depth to buttons */
+        }
+
+        /* Specific styles for the primary button (blue gradient) */
+        .btn-primary {
+            @apply bg-gradient-to-r from-blue-600 to-blue-800 text-white;
+            @apply hover:from-blue-700 hover:to-blue-900 hover:scale-105; /* Hover visual feedback */
+            @apply focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75; /* Focus state for accessibility */
+        }
+
+        /* Specific styles for the secondary button (darker, border) */
+        .btn-secondary {
+            @apply bg-gray-700 text-gray-100 border-2 border-gray-600;
+            @apply hover:bg-gray-600 hover:border-gray-500 hover:scale-105; /* Hover visual feedback */
+            @apply focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75; /* Focus state for accessibility */
+        }
+
+        /* Initial state for content fade-in animation */
+        .content-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .content-fade-in.show {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 1s ease-out, transform 1s ease-out; /* Smooth reveal */
+        }
+
+        /* Mobile navigation panel (slides from right) */
+        .mobile-nav-hidden {
+            transform: translateX(100%); /* Off-screen right */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .mobile-nav-visible {
+            transform: translateX(0); /* On-screen */
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Right side panel (quick access, slides from right) */
+        .right-panel-hidden {
+            transform: translateX(100%);
+            opacity: 0;           /* Ensures it's fully invisible */
+            visibility: hidden;   /* Ensures it's not interactive when hidden */
+            pointer-events: none; /* Prevents interaction when off-screen */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Adjusted transitions */
+        }
+        .right-panel-visible {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; /* Allows interaction when active */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0s; /* Adjusted transitions */
+        }
+
+        /* Overlay for side panels (dims background, catches clicks outside) */
+        #mobile-nav-overlay, #right-panel-overlay { /* Combined overlay for both panels */
+            @apply fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
+        }
+        #mobile-nav-overlay.is-active, #right-panel-overlay.is-active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Navbar link hover effect: animated bottom line */
+        .navbar-link {
+            position: relative;
+        }
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; /* Position below the text */
+            left: 50%; /* Start from center */
+            transform: translateX(-50%);
+            width: 0; /* Initially hidden */
+            height: 2px;
+            background-color: theme('colors.blue.400'); /* Accent color */
+            transition: width 0.3s ease-in-out; /* Smooth growth */
+        }
+        .navbar-link:hover::after {
+            width: 100%; /* Expands to full width on hover */
+        }
+
+        /* Scroll-triggered section animation base state */
+        .section-hidden-anim {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section-visible-anim {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Testimonial carousel styles */
+        .testimonial-card {
+            @apply bg-gray-800 bg-opacity-70 p-6 rounded-lg shadow-xl text-center flex flex-col justify-between items-center h-full;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; /* Hidden by default */
+            position: absolute; /* For layering in carousel */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .testimonial-card.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        .carousel-dots {
+            @apply flex justify-center mt-4 space-x-2;
+        }
+        .carousel-dot {
+            @apply w-3 h-3 rounded-full bg-gray-500 cursor-pointer transition-colors duration-200;
+        }
+        .carousel-dot.active {
+            @apply bg-blue-400;
+        }
+        .carousel-arrow {
+            @apply absolute top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-700 text-white cursor-pointer hover:bg-blue-600 transition-colors duration-200;
+        }
+        .carousel-arrow.left { @apply left-2; }
+        .carousel-arrow.right { @apply right-2; }
+
+        /* Form input styling - exact Tailwind classes as per your latest provided HTML */
+        .form-input-custom {
+            @apply w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200;
+        }
+
+        /* Style for select dropdowns to match inputs */
+        .form-input-custom select {
+            @apply appearance-none; /* Removes default arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23E2E8F0%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem; /* Make space for the custom arrow */
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-light-text font-balooBhai2 antialiased relative min-h-screen">
+
+    <!-- Responsive, auto-changing background image container -->
+    <div id="background-slider" class="absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out"
+        style="background-size: cover; background-position: center; background-repeat: no-repeat;">
+    </div>
+
+    <!-- Main content container to layer above background -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+        <header class="p-4 lg:px-8 lg:py-0 flex flex-col lg:flex-row items-center justify-between shadow-lg bg-gray-900 bg-opacity-80">
+            <!-- Left Box: Logo and Name (smaller and refined) -->
+            <div class="flex items-center gap-3 mb-4 lg:mb-0">
+                <img
+                    src="img/dumbel%20pic.jpg"
+                    alt="Forge Fitness Hub Logo"
+                    class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full border-2 border-blue-400 p-1 object-cover transform transition-transform duration-300 hover:scale-105"
+                />
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-blue-400 drop-shadow-lg">Forge Fitness Hub</div>
+            </div>
+
+            <!-- Mobile Navigation Toggle Button (Hamburger icon) - visible only on small screens -->
+            <button
+                id="mobile-menu-button"
+                class="lg:hidden absolute top-6 right-16 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                aria-label="Toggle navigation menu"
+            >
+                <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <!-- Right-Side Quick Access Toggle Button - for all screen sizes -->
+            <button
+                id="right-panel-toggle-button"
+                class="absolute top-6 right-4 p-2 rounded-md bg-blue-700 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 lg:static lg:ml-auto lg:order-last flex items-center gap-2 group"
+                aria-label="Toggle quick access panel"
+            >
+                <!-- Text for larger screens, icon for all -->
+                <span class="hidden lg:inline font-semibold text-lg group-hover:animate-fadeInUp">Quick Access</span>
+                <i class="fas fa-bars text-white w-6 h-6"></i> <!-- Bars icon for menu -->
+            </button>
+
+            <!-- Main Navigation (Navbar) - sliding on mobile, static on desktop -->
+            <nav
+                id="mobile-nav"
+                class="fixed inset-y-0 right-0 w-64 bg-gray-900 bg-opacity-95 shadow-xl p-6 transform transition-transform duration-300 ease-in-out z-50
+                       hidden lg:flex lg:static lg:w-auto lg:p-0 lg:shadow-none lg:bg-transparent lg:order-2 lg:ml-8 lg:mr-8"
+            >
+                <!-- Close Button for Mobile Nav (visible only on mobile) -->
+                <button id="close-mobile-nav-button" class="lg:hidden absolute top-4 right-4 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                    <i class="fas fa-times text-white w-6 h-6"></i>
+                </button>
+                <ul class="flex flex-col lg:flex-row gap-6 lg:gap-8 mt-16 lg:mt-0">
+                    <li><a href="#hero-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Home</a></li>
+                    <li><a href="#about-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">About Us</a></li>
+                    <li><a href="#services-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Services</a></li>
+                    <li><a href="#testimonials-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Testimonials</a></li>
+                    <li><a href="#calculator-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Calculator</a></li>
+                    <li><a href="#join-form-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Join Now</a></li>
+                    <li><a href="#contact-form-section" class="text-xl font-semibold text-gray-200 hover:text-blue-400 block py-2 lg:py-0 navbar-link">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Right Side Panel (Toggleable Quick Access) - Slides in from right -->
+        <div id="right-side-panel" class="fixed inset-y-0 right-0 w-72 bg-gray-900 bg-opacity-95 shadow-xl p-6 transform transition-transform duration-300 ease-in-out right-panel-hidden z-50">
+            <!-- Close Button for the right panel -->
+            <button id="close-right-panel-button" class="absolute top-4 right-4 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                <i class="fas fa-times text-white w-6 h-6"></i>
+            </button>
+
+            <h2 class="text-3xl font-extrabold text-blue-400 mb-8 mt-16">Quick Links & Info</h2>
+
+            <div class="space-y-6">
+                <!-- Contact Information Section -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xl font-semibold text-gray-200">Contact Us</h3>
+                    <a href="tel:+1234567890" class="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors duration-200 group">
+                        <i class="fas fa-phone-alt text-blue-400 group-hover:animate-wiggle"></i>
+                        <span class="font-semibold">+1 (234) 567-890</span>
+                    </a>
+                    <a href="mailto:info@forgefitnesshub.com" class="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors duration-200 group">
+                        <i class="fas fa-envelope text-blue-400 group-hover:animate-wiggle"></i>
+                        <span class="font-semibold">info@forgefitnesshub.com</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/YourGymLocation" target="_blank" class="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors duration-200 group">
+                        <i class="fas fa-map-marker-alt text-blue-400 group-hover:animate-wiggle"></i>
+                        <span class="font-semibold">Find Our Location</span>
+                    </a>
+                </div>
+
+                <!-- Social Media Links Section -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xl font-semibold text-gray-200">Follow Us</h3>
+                    <div class="flex gap-4">
+                        <a href="https://facebook.com/forgefitnesshub" target="_blank" class="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-3xl group">
+                            <i class="fab fa-facebook-square group-hover:animate-popIn"></i>
+                        </a>
+                        <a href="https://instagram.com/forgefitnesshub" target="_blank" class="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-3xl group">
+                            <i class="fab fa-instagram-square group-hover:animate-popIn"></i>
+                        </a>
+                        <a href="https://twitter.com/forgefitnesshub" target="_blank" class="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-3xl group">
+                            <i class="fab fa-twitter-square group-hover:animate-popIn"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons Section -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xl font-semibold text-gray-200">Actions</h3>
+                    <a href="#join-form-section" class="btn-primary w-full animate-pulseOutline text-center">Join Our Community</a>
+                    <button class="btn-secondary w-full">View Schedule</button>
+                </div>
+            </div>
+        </div>
+        <!-- Overlay for mobile nav and right panel (dims background and closes panel on click outside) -->
+        <div id="mobile-nav-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+        <div id="right-panel-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+
+        <!-- NEW: Hero Section - Prominent Call-to-Action -->
+        <section id="hero-section" class="flex-grow flex flex-col justify-center items-center text-center py-20 px-4 section-hidden-anim">
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 animate-fadeInUp">
+                Transform Your Life with <span class="text-blue-400">Forge Fitness Hub</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mb-8 animate-fadeInUp" style="animation-delay: 0.2s;">
+                Achieve your fitness goals with expert guidance, state-of-the-art equipment, and a supportive community.
+            </p>
+            <a href="#join-form-section" class="btn-primary px-10 py-4 text-xl animate-popIn border-4 border-blue-400 rounded-xl relative overflow-hidden animate-pulseOutline" style="animation-delay: 0.4s;">
+                Start Your Journey Now!
+            </a>
+        </section>
+
+        <!-- NEW: About Us Section (Placeholder, but good for structure) -->
+        <section id="about-section" class="py-16 px-4 md:px-8 bg-gray-900 section-hidden-anim">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-6">About Forge Fitness Hub</h2>
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    At Forge Fitness Hub, we believe in empowering individuals to achieve their full potential. Our mission is to provide a world-class fitness experience, tailored to your needs. With certified trainers, diverse classes, and cutting-edge facilities, we're here to support every step of your journey towards a healthier, stronger you. Join our family and discover the difference!
+                </p>
+            </div>
+        </section>
+
+        <!-- NEW: Our Services Section -->
+        <section id="services-section" class="py-16 px-4 md:px-8 section-hidden-anim">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Service Card 1 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-dumbbell text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Personal Training</h3>
+                    <p class="text-gray-300">Tailored workout plans and one-on-one coaching to meet your specific goals.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Learn More</a>
+                </div>
+                <!-- Service Card 2 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-users text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Group Classes</h3>
+                    <p class="text-gray-300">Energetic group sessions including HIIT, Zumba, Yoga, and Spin.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">View Schedule</a>
+                </div>
+                <!-- Service Card 3 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-apple-alt text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Nutrition Coaching</h3>
+                    <p class="text-gray-300">Expert dietary advice to complement your training and optimize results.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Get Advice</a>
+                </div>
+                <!-- NEW SERVICE 4 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-heartbeat text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Wellness & Recovery</h3>
+                    <p class="text-gray-300">Dedicated zones for stretching, massage, and active recovery to support your overall well-being.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Explore More</a>
+                </div>
+                <!-- NEW SERVICE 5 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-child text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Youth Fitness Programs</h3>
+                    <p class="text-gray-300">Fun and engaging fitness programs tailored for children and teenagers to build healthy habits.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Discover Programs</a>
+                </div>
+                <!-- NEW SERVICE 6 -->
+                <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
+                    <i class="fas fa-laptop-house text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">Online Coaching & Resources</h3>
+                    <p class="text-gray-300">Access to virtual training sessions, workout libraries, and nutritional guides from home.</p>
+                    <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Get Online</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Testimonials Section -->
+        <section id="testimonials-section" class="py-16 px-4 md:px-8 bg-gray-900 section-hidden-anim">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Hear From Our Members</h2>
+            <div class="max-w-3xl mx-auto relative overflow-hidden h-96"> <!-- Fixed height for carousel -->
+                <div id="testimonial-carousel-container" class="relative w-full h-full">
+                    <!-- Testimonial Cards will be injected by JavaScript -->
+                    <!-- Example structure (initially hidden by JS) -->
+                    <!-- <div class="testimonial-card">...</div> -->
+                </div>
+                
+                <!-- Carousel Navigation Arrows -->
+                <button id="prev-testimonial" class="carousel-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-testimonial" class="carousel-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <!-- Carousel Dots -->
+            <div id="testimonial-dots-container" class="carousel-dots"></div>
+        </section>
+
+        <!-- NEW: Interactive BMI Calculator Section -->
+        <section id="calculator-section" class="py-16 px-4 md:px-8 section-hidden-anim">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Fitness & BMI Calculator</h2>
+            <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg mx-auto shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
+                <h3 class="text-3xl font-bold text-center text-gray-100 mb-6">Calculate Your BMI</h3>
+                <div class="space-y-4">
+                    <!-- Height Unit Selection -->
+                    <div class="flex justify-center space-x-6 mb-4">
+                        <label class="inline-flex items-center text-lg text-gray-300 cursor-pointer">
+                            <input type="radio" name="height-unit" value="cm" class="form-radio text-blue-500 w-5 h-5" checked>
+                            <span class="ml-2">CM</span>
+                        </label>
+                        <label class="inline-flex items-center text-lg text-gray-300 cursor-pointer">
+                            <input type="radio" name="height-unit" value="ft-in" class="form-radio text-blue-500 w-5 h-5">
+                            <span class="ml-2">Feet/Inches</span>
+                        </label>
+                    </div>
+
+                    <!-- BMI Form Inputs - now using exact Tailwind classes -->
+                    <div class="form-group">
+                        <input type="number" id="weight" placeholder="Weight (kg)"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                    </div>
+
+                    <div class="form-group" id="height-cm-group">
+                        <input type="number" id="height-cm" placeholder="Height (cm)"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                    </div>
+
+                    <div class="form-group hidden" id="height-ft-in-group">
+                        <div class="flex gap-4">
+                            <input type="number" id="height-ft" placeholder="Feet"
+                                class="w-1/2 p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                            <input type="number" id="height-in" placeholder="Inches"
+                                class="w-1/2 p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button id="calculate-bmi-button" class="btn-primary flex-grow">Calculate BMI</button>
+                        <button id="clear-bmi-button" type="button" class="btn-secondary flex-grow">Clear Fields</button>
+                    </div>
+                </div>
+                <div id="bmi-result" class="mt-8 text-center text-2xl font-bold text-blue-300 bg-gray-700 p-4 rounded-lg animate-popIn hidden">
+                    <!-- BMI result will appear here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Existing: Join Gym Now Form -->
+        <section id="join-form-section" class="flex-grow flex justify-center items-center py-16 px-4 section-hidden-anim">
+            <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
+                <h1 class="text-4xl font-extrabold text-center mb-8 text-blue-300 drop-shadow-lg animate-popIn">
+                    Join Our Gym
+                </h1>
+                <form id="joinForm" class="space-y-6">
+                    <!-- Join Form Inputs - now using exact Tailwind classes -->
+                    <div class="form-group">
+                        <input type="text" id="join-name" name="name" placeholder="Your Name"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="join-age" name="age" placeholder="Your Age"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="join-gender" name="gender"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="join-locality" name="locality" placeholder="Your Locality"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="join-email" name="email" placeholder="Your Email"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="join-phone" name="phone" placeholder="Your Phone Number"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-primary flex-grow animate-pulseOutline">
+                            Submit
+                        </button>
+                        <button type="button" id="clear-join-form" class="btn-secondary flex-grow">
+                            Clear Form
+                        </button>
+                    </div>
+                </form>
+                <div id="joinMessage" class="mt-4 text-center text-lg font-semibold rounded-lg p-3 hidden"></div>
+            </div>
+        </section>
+
+        <!-- NEW: Contact Us Form Section -->
+        <section id="contact-form-section" class="flex-grow flex justify-center items-center py-16 px-4 section-hidden-anim bg-gray-900">
+            <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
+                <h1 class="text-4xl font-extrabold text-center mb-8 text-blue-300 drop-shadow-lg animate-popIn">
+                    Contact Us
+                </h1>
+                <form id="contactForm" class="space-y-6">
+                    <!-- Contact Form Inputs - now using exact Tailwind classes -->
+                    <div class="form-group">
+                        <input type="text" id="contact-name-input" name="contact-name" placeholder="Your Name"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="contact-email-input" name="contact-email" placeholder="Your Email"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="contact-subject-input" name="contact-subject" placeholder="Subject"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="contact-message-input" name="contact-message" rows="5" placeholder="Your Message"
+                            class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required></textarea>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-primary flex-grow animate-pulseOutline">
+                            Send Message
+                        </button>
+                        <button type="button" id="clear-contact-form" class="btn-secondary flex-grow">
+                            Clear Form
+                        </button>
+                    </div>
+                </form>
+                <div id="contactMessage" class="mt-4 text-center text-lg font-semibold rounded-lg p-3 hidden"></div>
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer id="contact-footer" class="bg-gray-900 bg-opacity-80 py-8 px-4 text-center text-gray-400 text-sm">
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <p>© 2025 Forge Fitness Hub. All rights reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-blue-400 transition-colors duration-200">Privacy Policy</a>
+                    <a href="#" class="hover:text-blue-400 transition-colors duration-200">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript for interactivity and animations -->
+    <script>
+        // *** IMPORTANT: REPLACE 'YOUR_RENDER_BACKEND_URL_HERE' WITH YOUR ACTUAL RENDER.COM BACKEND SERVICE URL ***
+        // Example: const BACKEND_API_BASE_URL = 'https://forge-fitness-hub-backend.onrender.com';
+        const BACKEND_API_BASE_URL = 'YOUR_RENDER_BACKEND_URL_HERE'; // DO NOT FORGET TO UPDATE THIS!
+
+        // --- Element Selections ---
+        const backgroundImages = [
+            'img/gym-bg-1.jpg', // Placeholder for actual images
+            // It's good practice to provide full URLs for images, especially if Vercel might not handle relative paths
+            'https://placehold.co/1920x1080/1A202C/E2E8F0?text=Dynamic+Gym+2', 
+            'https://placehold.co/1920x1080/0F172A/FF4A52?text=Dynamic+Gym+3', 
+            'https://placehold.co/1920x1080/2C3E50/EAEAEA?text=Dynamic+Gym+4'  
+        ];
+
+        // Fallback placeholder images if original paths don't work (used inside initBackgroundSlider if paths fail)
+        const placeholderBgImages = [
+            'https://placehold.co/1920x1080/0F172A/00BFFF?text=Dynamic+Gym+1',
+            'https://placehold.co/1920x1080/1A202C/E2E8F0?text=Dynamic+Gym+2',
+            'https://placehold.co/1920x1080/0F172A/FF4A52?text=Dynamic+Gym+3',
+            'https://placehold.co/1920x1080/2C3E50/EAEAEA?text=Dynamic+Gym+4'
+        ];
+
+        let currentBackgroundIndex = 0;
+        const backgroundSlider = document.getElementById('background-slider');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileNav = document.getElementById('mobile-nav');
+        const closeMobileNavButton = document.getElementById('close-mobile-nav-button');
+        const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+
+        const rightPanelToggleButton = document.getElementById('right-panel-toggle-button');
+        const rightSidePanel = document.getElementById('right-side-panel');
+        const closeRightPanelButton = document.getElementById('close-right-panel-button');
+        const rightPanelOverlay = document.getElementById('right-panel-overlay');
+
+        const contactForm = document.getElementById('contactForm');
+        const contactMessageDiv = document.getElementById('contactMessage');
+        const joinForm = document.getElementById('joinForm');
+        const joinMessageDiv = document.getElementById('joinMessage');
+
+        const navbarLinks = document.querySelectorAll('.navbar-link');
+        const sectionHiddenAnimElements = document.querySelectorAll('.section-hidden-anim');
+
+        // --- Background Image Slider Functionality ---
+        function initBackgroundSlider() {
+            const setBackgroundImage = (url) => {
+                const img = new Image();
+                img.onload = () => {
+                    backgroundSlider.style.backgroundImage = `url('${url}')`;
+                    backgroundSlider.style.opacity = 1;
+                };
+                img.onerror = () => {
+                    console.warn(`Failed to load ${url}, falling back to placeholder.`);
+                    // Fallback to placeholder if the specific image fails to load
+                    backgroundSlider.style.backgroundImage = `url('${placeholderBgImages[currentBackgroundIndex % placeholderBgImages.length]}')`;
+                    backgroundSlider.style.opacity = 1;
+                };
+                backgroundSlider.style.opacity = 0;
+                setTimeout(() => {
+                    img.src = url;
+                }, 1000);
+            };
+
+            // Initial background (using your provided image as a fallback for the very first one if gym-bg-1.jpg doesn't exist)
+            const initialImage = backgroundImages[0] || 'img/dumbel%20pic.jpg'; // Your logo image, or placeholder
+            setBackgroundImage(initialImage);
+
+
+            const changeBackground = () => {
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+                const nextImageUrl = backgroundImages[currentBackgroundIndex]; // Use from backgroundImages array
+                setBackgroundImage(nextImageUrl);
+            };
+
+            setInterval(changeBackground, 5000);
+        }
+
+        // --- Mobile Navigation Toggle Functionality ---
+        function toggleMobileNav() {
+            const isHidden = mobileNav.classList.contains('mobile-nav-hidden');
+
+            if (isHidden) {
+                mobileNav.classList.remove('hidden', 'mobile-nav-hidden');
+                mobileNav.classList.add('mobile-nav-visible');
+                mobileNavOverlay.classList.add('is-active');
+            } else {
+                if (window.innerWidth < 1024) {
+                     mobileNav.classList.add('hidden');
+                }
+                mobileNav.classList.remove('mobile-nav-visible');
+                mobileNav.classList.add('mobile-nav-hidden');
+                mobileNavOverlay.classList.remove('is-active');
+            }
+
+            if (mobileNav.classList.contains('mobile-nav-visible') && rightSidePanel.classList.contains('right-panel-visible')) {
+                toggleRightPanel();
+            }
+        }
+
+        // --- Right Side Panel Toggle Functionality ---
+        function toggleRightPanel() {
+            rightSidePanel.classList.toggle('right-panel-hidden');
+            rightSidePanel.classList.toggle('right-panel-visible');
+            rightPanelOverlay.classList.toggle('is-active');
+            if (rightSidePanel.classList.contains('right-panel-visible') && mobileNav.classList.contains('mobile-nav-visible')) {
+                toggleMobileNav();
+            }
+        }
+
+        // --- Smooth Scrolling for Navigation Links ---
+        function setupSmoothScroll() {
+            navbarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        if (mobileNav.classList.contains('mobile-nav-visible')) {
+                            toggleMobileNav();
+                        }
+                        if (rightSidePanel.classList.contains('right-panel-visible')) {
+                             toggleRightPanel();
+                        }
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+             const quickAccessLinks = rightSidePanel.querySelectorAll('a[href^="#"]');
+             quickAccessLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        toggleRightPanel();
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+             });
+        }
+
+        // --- Scroll-Triggered Section Animations using IntersectionObserver ---
+        function setupScrollAnimations() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('section-visible-anim');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sectionHiddenAnimElements.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // --- Testimonial Carousel Functionality ---
+        const testimonials = [
+            {
+                quote: "Forge Fitness Hub transformed my perception of working out. The trainers are incredibly supportive and the community is like family!",
+                author: "— Sarah J.",
+                image: "https://placehold.co/80x80/FFD700/000000?text=SJ"
+            },
+            {
+                quote: "I've tried many gyms, but Forge Fitness Hub stands out with its modern equipment and diverse class offerings. Highly recommend!",
+                author: "— Mike R.",
+                image: "https://placehold.co/80x80/ADFF2F/000000?text=MR"
+            },
+            {
+                quote: "From nutrition coaching to personal training, every aspect of Forge Fitness Hub is top-notch. I'm healthier and happier than ever!",
+                author: "— Emily D.",
+                image: "https://placehold.co/80x80/87CEEB/000000?text=ED" // Corrected to valid image URL
+            },
+            {
+                quote: "The atmosphere is always energetic and motivating. It's the perfect place to push your limits and achieve real results.",
+                author: "— David L.",
+                image: "https://placehold.co/80x80/FF6347/000000?text=DL"
+            }
+        ];
+
+        let currentTestimonialIndex = 0;
+        let testimonialInterval;
+        const testimonialCarouselContainer = document.getElementById('testimonial-carousel-container');
+        const testimonialDotsContainer = document.getElementById('testimonial-dots-container');
+        const prevTestimonialButton = document.getElementById('prev-testimonial');
+        const nextTestimonialButton = document.getElementById('next-testimonial');
+
+        function renderTestimonials() {
+            if (!testimonialCarouselContainer) return;
+
+            testimonialCarouselContainer.innerHTML = '';
+            testimonialDotsContainer.innerHTML = '';
+
+            testimonials.forEach((testimonial, index) => {
+                const card = document.createElement('div');
+                card.classList.add('testimonial-card', 'absolute', 'w-full', 'h-full');
+                if (index === currentTestimonialIndex) {
+                    card.classList.add('active');
+                }
+                card.innerHTML = `
+                    <p class="text-xl md:text-2xl italic mb-6 text-gray-200">"${testimonial.quote}"</p>
+                    <div class="flex items-center justify-center gap-4">
+                        <img src="${testimonial.image}" alt="${testimonial.author}" class="w-16 h-16 rounded-full object-cover border-2 border-blue-400">
+                        <p class="text-lg font-bold text-blue-300">${testimonial.author}</p>
+                    </div>
+                `;
+                testimonialCarouselContainer.appendChild(card);
+
+                const dot = document.createElement('span');
+                dot.classList.add('carousel-dot');
+                if (index === currentTestimonialIndex) {
+                    dot.classList.add('active');
+                }
+                dot.addEventListener('click', () => showTestimonial(index));
+                testimonialDotsContainer.appendChild(dot);
+            });
+        }
+
+        function showTestimonial(index) {
+            clearInterval(testimonialInterval);
+            const cards = document.querySelectorAll('.testimonial-card');
+            const dots = document.querySelectorAll('.carousel-dot');
+
+            cards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            currentTestimonialIndex = index;
+            startTestimonialAutoScroll();
+        }
+
+        function nextTestimonial() {
+            const nextIndex = (currentTestimonialIndex + 1) % testimonials.length;
+            showTestimonial(nextIndex);
+        }
+
+        function prevTestimonial() {
+            const prevIndex = (currentTestimonialIndex - 1 + testimonials.length) % testimonials.length;
+            showTestimonial(prevIndex);
+        }
+
+        function startTestimonialAutoScroll() {
+            testimonialInterval = setInterval(nextTestimonial, 7000);
+        }
+
+        // --- BMI Calculator Functionality ---
+        const weightInput = document.getElementById('weight');
+        const heightCmInput = document.getElementById('height-cm');
+        const heightFtInput = document.getElementById('height-ft');
+        const heightInInput = document.getElementById('height-in');
+        const heightCmGroup = document.getElementById('height-cm-group');
+        const heightFtInGroup = document.getElementById('height-ft-in-group');
+        const heightUnitRadios = document.querySelectorAll('input[name="height-unit"]');
+        const calculateBmiButton = document.getElementById('calculate-bmi-button');
+        const clearBmiButton = document.getElementById('clear-bmi-button'); // New clear button
+        const bmiResultDiv = document.getElementById('bmi-result');
+
+        function toggleHeightInputs() {
+            const selectedUnit = document.querySelector('input[name="height-unit"]:checked').value;
+            if (selectedUnit === 'cm') {
+                heightCmGroup.classList.remove('hidden');
+                heightFtInGroup.classList.add('hidden');
+                heightFtInput.value = '';
+                heightInInput.value = '';
+            } else {
+                heightCmGroup.classList.add('hidden');
+                heightFtInGroup.classList.remove('hidden');
+                heightCmInput.value = '';
+            }
+        }
+
+        function calculateBMI() {
+            const weight = parseFloat(weightInput.value);
+            let heightInMeters;
+
+            const selectedUnit = document.querySelector('input[name="height-unit"]:checked').value;
+
+            if (selectedUnit === 'cm') {
+                const heightCm = parseFloat(heightCmInput.value);
+                if (isNaN(heightCm) || heightCm <= 0) {
+                    bmiResultDiv.textContent = "Please enter a valid height in centimeters.";
+                    bmiResultDiv.classList.remove('hidden');
+                    bmiResultDiv.className = 'mt-8 text-center text-2xl font-bold p-4 rounded-lg bg-red-800 text-red-400 animate-popIn';
+                    return;
+                }
+                heightInMeters = heightCm / 100;
+            } else { // ft-in
+                const feet = parseFloat(heightFtInput.value);
+                const inches = parseFloat(heightInInput.value);
+
+                if (isNaN(feet) || isNaN(inches) || feet < 0 || inches < 0 || inches >= 12) {
+                    bmiResultDiv.textContent = "Please enter valid feet (>=0) and inches (0-11).";
+                    bmiResultDiv.classList.remove('hidden');
+                    bmiResultDiv.className = 'mt-8 text-center text-2xl font-bold p-4 rounded-lg bg-red-800 text-red-400 animate-popIn';
+                    return;
+                }
+                const totalInches = (feet * 12) + inches;
+                heightInMeters = totalInches * 0.0254;
+            }
+
+            if (isNaN(weight) || weight <= 0) {
+                bmiResultDiv.textContent = "Please enter a valid weight in kilograms.";
+                bmiResultDiv.classList.remove('hidden');
+                bmiResultDiv.className = 'mt-8 text-center text-2xl font-bold p-4 rounded-lg bg-red-800 text-red-400 animate-popIn';
+                    return;
+            }
+
+            const bmi = weight / (heightInMeters * heightInMeters);
+            const roundedBmi = bmi.toFixed(2);
+
+            let bmiCategory = "";
+            let textColorClass = "text-blue-300";
+            let bgColorClass = "bg-gray-700";
+
+            if (bmi < 18.5) {
+                bmiCategory = "Underweight";
+                textColorClass = "text-yellow-400";
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                bmiCategory = "Normal weight";
+                textColorClass = "text-green-400";
+            } else if (bmi >= 25 && bmi < 29.9) {
+                bmiCategory = "Overweight";
+                textColorClass = "text-orange-400";
+            } else {
+                bmiCategory = "Obese";
+                textColorClass = "text-red-400";
+            }
+
+            bmiResultDiv.innerHTML = `Your BMI is: <span class="${textColorClass}">${roundedBmi}</span> (${bmiCategory})`;
+            bmiResultDiv.className = `mt-8 text-center text-2xl font-bold p-4 rounded-lg ${bgColorClass} animate-popIn`;
+        }
+
+        // --- Helper function to display messages on form submission ---
+        function showMessage(element, message, isSuccess) {
+            element.textContent = message;
+            element.classList.remove('hidden', 'bg-green-600', 'bg-red-600', 'text-green-200', 'text-red-200');
+            if (isSuccess) {
+                element.classList.add('bg-green-600', 'text-green-200');
+            } else {
+                element.classList.add('bg-red-600', 'text-red-200');
+            }
+            element.classList.add('animate-popIn');
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 5000);
+        }
+
+        // --- Event Listeners and Initializations (On Window Load) ---
+        window.onload = function () {
+            initBackgroundSlider();
+
+            // Mobile menu button and overlay listeners
+            mobileMenuButton.addEventListener('click', toggleMobileNav);
+            closeMobileNavButton.addEventListener('click', toggleMobileNav); // Explicit close button
+            mobileNavOverlay.addEventListener('click', toggleMobileNav); // Close on overlay click
+
+            // Right panel toggle button and overlay listeners
+            rightPanelToggleButton.addEventListener('click', toggleRightPanel);
+            closeRightPanelButton.addEventListener('click', toggleRightPanel);
+            rightPanelOverlay.addEventListener('click', toggleRightPanel); // Close on overlay click
+
+            setupSmoothScroll();
+            setupScrollAnimations();
+            renderTestimonials();
+            startTestimonialAutoScroll();
+            prevTestimonialButton.addEventListener('click', prevTestimonial);
+            nextTestimonialButton.addEventListener('click', nextTestimonial);
+
+            // BMI Calculator logic
+            heightUnitRadios.forEach(radio => {
+                radio.addEventListener('change', toggleHeightInputs);
+            });
+            toggleHeightInputs(); // Initial call
+            calculateBmiButton.addEventListener('click', calculateBMI);
+            clearBmiButton.addEventListener('click', () => {
+                weightInput.value = '';
+                heightCmInput.value = '';
+                heightFtInput.value = '';
+                heightInInput.value = '';
+                bmiResultDiv.classList.add('hidden');
+                document.querySelector('input[name="height-unit"][value="cm"]').checked = true; // Reset to CM
+                toggleHeightInputs(); // Ensure correct fields are visible
+            });
+
+            // Handle window resize to ensure correct navbar state for desktop/mobile
+            const handleResize = () => {
+                if (window.innerWidth >= 1024) { // Equivalent to Tailwind's 'lg' breakpoint
+                    // On large screens, ensure the mobile nav is hidden and main nav is flex
+                    mobileNav.classList.remove('hidden', 'mobile-nav-hidden', 'mobile-nav-visible'); // Clean up all mobile-specific classes
+                    mobileNav.classList.add('flex'); // Ensure flex display for desktop navbar
+                    mobileNavOverlay.classList.remove('is-active'); // Deactivate overlay
+                } else {
+                    // On small screens, ensure the main nav is NOT flex (its position is fixed)
+                    mobileNav.classList.remove('flex'); // Remove desktop-specific flex display
+
+                    // If the mobile nav is NOT currently visible, make sure it's hidden and has its slide-out class
+                    if (!mobileNav.classList.contains('mobile-nav-visible')) {
+                        mobileNav.classList.add('hidden', 'mobile-nav-hidden');
+                    }
+                    // If it IS visible, then the 'hidden' class should be absent, handled by toggleMobileNav
+                }
+            };
+
+            // Run on initial load and whenever window is resized
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial check on load
+
+            // --- Form Submission Logics ---
+
+            // Contact Form
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = contactForm.querySelector('[name="contact-name"]').value;
+                    const email = contactForm.querySelector('[name="contact-email"]').value;
+                    const subject = contactForm.querySelector('[name="contact-subject"]').value;
+                    const message = contactForm.querySelector('[name="contact-message"]').value;
+
+                    try {
+                        // Use the dynamically set BACKEND_API_BASE_URL
+                        const response = await fetch(`${BACKEND_API_BASE_URL}/api/contact`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, email, subject, message }),
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessage(contactMessageDiv, data.message, true);
+                            contactForm.reset();
+                        } else {
+                            showMessage(contactMessageDiv, data.message || 'An error occurred.', false);
+                        }
+                    } catch (error) {
+                        console.error('Network or server error submitting contact form:', error);
+                        showMessage(contactMessageDiv, 'Could not connect to the server. Please try again later.', false);
+                    }
+                });
+
+                document.getElementById('clear-contact-form').addEventListener('click', () => {
+                    contactForm.reset();
+                    contactMessageDiv.classList.add('hidden');
+                });
+            }
+
+            // Join Form
+            if (joinForm) {
+                joinForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = joinForm.querySelector('[name="name"]').value;
+                    const age = joinForm.querySelector('[name="age"]').value;
+                    const gender = joinForm.querySelector('[name="gender"]').value;
+                    const locality = joinForm.querySelector('[name="locality"]').value;
+                    const email = joinForm.querySelector('[name="email"]').value;
+                    const phone = joinForm.querySelector('[name="phone"]').value;
+
+                    try {
+                        // Use the dynamically set BACKEND_API_BASE_URL
+                        const response = await fetch(`${BACKEND_API_BASE_URL}/api/join`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, age, gender, locality, email, phone }),
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessage(joinMessageDiv, data.message, true);
+                            joinForm.reset();
+                        } else {
+                            showMessage(joinMessageDiv, data.message || 'An error occurred.', false);
+                        }
+                    } catch (error) {
+                        console.error('Network or server error submitting join form:', error);
+                        showMessage(joinMessageDiv, 'Could not connect to the server. Please try again later.', false);
+                    }
+                });
+
+                document.getElementById('clear-join-form').addEventListener('click', () => {
+                    joinForm.reset();
+                    joinMessageDiv.classList.add('hidden');
+                });
+            }
+        };
+    </script>
+</body>
+</html>
