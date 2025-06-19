@@ -1,3 +1,7 @@
+actual fetch html
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,13 +13,13 @@
     <!-- Google Fonts: Baloo Bhai 2 for consistent typography -->
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;700;800&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome for modern icons -->
+    <!-- Font Awesome for modern icons (phone, envelope, map, social media, menu toggles) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN for utility-first styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind CSS Custom Configuration for animations and fonts -->
+    <!-- Tailwind CSS Custom Configuration for extending default theme and adding animations -->
     <script>
         tailwind.config = {
             theme: {
@@ -24,19 +28,43 @@
                         balooBhai2: ['"Baloo Bhai 2"', 'cursive'],
                     },
                     colors: {
-                        'blue-accent': '#00BFFF',
-                        'dark-bg': '#0F172A',
-                        'light-text': '#E2E8F0',
+                        'blue-accent': '#00BFFF', /* Primary accent color */
+                        'dark-bg': '#0F172A',     /* Very dark background */
+                        'light-text': '#E2E8F0',  /* Light text color for readability */
                     },
                     keyframes: {
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        popIn: { '0%': { opacity: '0', transform: 'scale(0.8)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
-                        pulseOutline: { '0%, 100%': { 'box-shadow': '0 0 0 0 rgba(59, 130, 246, 0.7)' }, '50%': { 'box-shadow': '0 0 0 10px rgba(59, 130, 246, 0)' } },
-                        wiggle: { '0%, 100%': { transform: 'rotate(-3deg)' }, '50%': { transform: 'rotate(3deg)' } },
-                        slideInLeft: { '0%': { opacity: '0', transform: 'translateX(-50px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
-                        slideInRight: { '0%': { opacity: '0', transform: 'translateX(50px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        textRise: { '0%': { transform: 'translateY(100%)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        pulseOutline: {
+                            '0%, 100%': { 'box-shadow': '0 0 0 0 rgba(59, 130, 246, 0.7)' },
+                            '50%': { 'box-shadow': '0 0 0 10px rgba(59, 130, 246, 0)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        textRise: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
                     },
                     animation: {
                         fadeInUp: 'fadeInUp 0.8s ease-out forwards',
@@ -53,92 +81,166 @@
         };
     </script>
 
-    <!-- Custom Styles -->
+    <!-- Custom Styles using Tailwind's @apply directives for reusable components -->
     <style>
+        /* Base styles for the body to ensure full screen coverage and responsive overflow */
         body {
             font-family: 'Baloo Bhai 2', cursive;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            @apply bg-dark-bg text-light-text antialiased relative min-h-screen;
+            overflow-x: hidden; /* Prevents horizontal scrolling caused by animations or off-screen elements */
+            @apply bg-dark-bg text-light-text antialiased relative min-h-screen; /* Apply core Tailwind base styles */
         }
 
+        /* Reusable styles for primary and secondary buttons */
         .btn-primary, .btn-secondary {
-            @apply px-6 py-3 rounded-xl font-bold text-lg cursor-pointer transition-all duration-300 ease-in-out shadow-lg;
+            @apply px-6 py-3 rounded-xl font-bold text-lg cursor-pointer;
+            @apply transition-all duration-300 ease-in-out; /* Smooth transitions for hover effects */
+            @apply shadow-lg; /* Adds depth to buttons */
         }
 
+        /* Specific styles for the primary button (blue gradient) */
         .btn-primary {
-            @apply bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+            @apply bg-gradient-to-r from-blue-600 to-blue-800 text-white;
+            @apply hover:from-blue-700 hover:to-blue-900 hover:scale-105; /* Hover visual feedback */
+            @apply focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75; /* Focus state for accessibility */
         }
 
+        /* Specific styles for the secondary button (darker, border) */
         .btn-secondary {
-            @apply bg-gray-700 text-gray-100 border-2 border-gray-600 hover:bg-gray-600 hover:border-gray-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75;
+            @apply bg-gray-700 text-gray-100 border-2 border-gray-600;
+            @apply hover:bg-gray-600 hover:border-gray-500 hover:scale-105; /* Hover visual feedback */
+            @apply focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75; /* Focus state for accessibility */
         }
 
-        .content-fade-in { opacity: 0; transform: translateY(20px); }
-        .content-fade-in.show { opacity: 1; transform: translateY(0); transition: opacity 1s ease-out, transform 1s ease-out; }
+        /* Initial state for content fade-in animation */
+        .content-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .content-fade-in.show {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 1s ease-out, transform 1s ease-out; /* Smooth reveal */
+        }
 
         /* Mobile navigation panel (slides from right) */
-        .mobile-nav-hidden { transform: translateX(100%); opacity: 0; visibility: hidden; pointer-events: none; }
-        .mobile-nav-visible { transform: translateX(0); opacity: 1; visibility: visible; pointer-events: auto; }
+        .mobile-nav-hidden {
+            transform: translateX(100%); /* Off-screen right */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .mobile-nav-visible {
+            transform: translateX(0); /* On-screen */
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
 
         /* Right side panel (quick access, slides from right) */
         .right-panel-hidden {
-            transform: translateX(100%); opacity: 0; visibility: hidden; pointer-events: none;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0.3s;
+            transform: translateX(100%);
+            opacity: 0;           /* Ensures it's fully invisible */
+            visibility: hidden;   /* Ensures it's not interactive when hidden */
+            pointer-events: none; /* Prevents interaction when off-screen */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Adjusted transitions */
         }
         .right-panel-visible {
-            transform: translateX(0); opacity: 1; visibility: visible; pointer-events: auto;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0s;
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; /* Allows interaction when active */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s 0s; /* Adjusted transitions */
         }
 
-        /* Overlay for side panels */
-        #mobile-nav-overlay, #right-panel-overlay {
+        /* Overlay for side panels (dims background, catches clicks outside) */
+        #mobile-nav-overlay, #right-panel-overlay { /* Combined overlay for both panels */
             @apply fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out;
-            opacity: 0; visibility: hidden; pointer-events: none; backdrop-filter: blur(2px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
         }
         #mobile-nav-overlay.is-active, #right-panel-overlay.is-active {
-            opacity: 1; visibility: visible; pointer-events: auto;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
-        /* Navbar link hover effect */
-        .navbar-link { position: relative; }
-        .navbar-link::after {
-            content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 2px; background-color: theme('colors.blue.400'); transition: width 0.3s ease-in-out;
+        /* Navbar link hover effect: animated bottom line */
+        .navbar-link {
+            position: relative;
         }
-        .navbar-link:hover::after { width: 100%; }
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; /* Position below the text */
+            left: 50%; /* Start from center */
+            transform: translateX(-50%);
+            width: 0; /* Initially hidden */
+            height: 2px;
+            background-color: theme('colors.blue.400'); /* Accent color */
+            transition: width 0.3s ease-in-out; /* Smooth growth */
+        }
+        .navbar-link:hover::after {
+            width: 100%; /* Expands to full width on hover */
+        }
 
         /* Scroll-triggered section animation base state */
-        .section-hidden-anim { opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-        .section-visible-anim { opacity: 1; transform: translateY(0); }
+        .section-hidden-anim {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section-visible-anim {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Testimonial carousel styles */
         .testimonial-card {
             @apply bg-gray-800 bg-opacity-70 p-6 rounded-lg shadow-xl text-center flex flex-col justify-between items-center h-full;
-            transition: opacity 0.5s ease-in-out; opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; /* Hidden by default */
+            position: absolute; /* For layering in carousel */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        .testimonial-card.active { opacity: 1; z-index: 10; }
-        .carousel-dots { @apply flex justify-center mt-4 space-x-2; }
-        .carousel-dot { @apply w-3 h-3 rounded-full bg-gray-500 cursor-pointer transition-colors duration-200; }
-        .carousel-dot.active { @apply bg-blue-400; }
-        .carousel-arrow { @apply absolute top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-700 text-white cursor-pointer hover:bg-blue-600 transition-colors duration-200; }
+        .testimonial-card.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        .carousel-dots {
+            @apply flex justify-center mt-4 space-x-2;
+        }
+        .carousel-dot {
+            @apply w-3 h-3 rounded-full bg-gray-500 cursor-pointer transition-colors duration-200;
+        }
+        .carousel-dot.active {
+            @apply bg-blue-400;
+        }
+        .carousel-arrow {
+            @apply absolute top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-700 text-white cursor-pointer hover:bg-blue-600 transition-colors duration-200;
+        }
         .carousel-arrow.left { @apply left-2; }
         .carousel-arrow.right { @apply right-2; }
 
-        /* Form input styling */
+        /* Form input styling - exact Tailwind classes as per your latest provided HTML */
         .form-input-custom {
             @apply w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200;
         }
 
         /* Style for select dropdowns to match inputs */
         .form-input-custom select {
-            @apply appearance-none;
+            @apply appearance-none; /* Removes default arrow */
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23E2E8F0%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 0.75rem center;
             background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
+            padding-right: 2.5rem; /* Make space for the custom arrow */
         }
     </style>
 </head>
@@ -152,7 +254,7 @@
     <!-- Main content container to layer above background -->
     <div class="relative z-10 flex flex-col min-h-screen">
         <header class="p-4 lg:px-8 lg:py-0 flex flex-col lg:flex-row items-center justify-between shadow-lg bg-gray-900 bg-opacity-80">
-            <!-- Logo and Name -->
+            <!-- Left Box: Logo and Name (smaller and refined) -->
             <div class="flex items-center gap-3 mb-4 lg:mb-0">
                 <img
                     src="img/dumbel%20pic.jpg"
@@ -162,7 +264,7 @@
                 <div class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-blue-400 drop-shadow-lg">Forge Fitness Hub</div>
             </div>
 
-            <!-- Mobile Navigation Toggle Button -->
+            <!-- Mobile Navigation Toggle Button (Hamburger icon) - visible only on small screens -->
             <button
                 id="mobile-menu-button"
                 class="lg:hidden absolute top-6 right-16 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
@@ -179,23 +281,24 @@
                 </svg>
             </button>
 
-            <!-- Right-Side Quick Access Toggle Button -->
+            <!-- Right-Side Quick Access Toggle Button - for all screen sizes -->
             <button
                 id="right-panel-toggle-button"
                 class="absolute top-6 right-4 p-2 rounded-md bg-blue-700 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 lg:static lg:ml-auto lg:order-last flex items-center gap-2 group"
                 aria-label="Toggle quick access panel"
             >
+                <!-- Text for larger screens, icon for all -->
                 <span class="hidden lg:inline font-semibold text-lg group-hover:animate-fadeInUp">Quick Access</span>
-                <i class="fas fa-bars text-white w-6 h-6"></i>
+                <i class="fas fa-bars text-white w-6 h-6"></i> <!-- Bars icon for menu -->
             </button>
 
-            <!-- Main Navigation -->
+            <!-- Main Navigation (Navbar) - sliding on mobile, static on desktop -->
             <nav
                 id="mobile-nav"
                 class="fixed inset-y-0 right-0 w-64 bg-gray-900 bg-opacity-95 shadow-xl p-6 transform transition-transform duration-300 ease-in-out z-50
                        hidden lg:flex lg:static lg:w-auto lg:p-0 lg:shadow-none lg:bg-transparent lg:order-2 lg:ml-8 lg:mr-8"
             >
-                <!-- Close Button for Mobile Nav -->
+                <!-- Close Button for Mobile Nav (visible only on mobile) -->
                 <button id="close-mobile-nav-button" class="lg:hidden absolute top-4 right-4 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
                     <i class="fas fa-times text-white w-6 h-6"></i>
                 </button>
@@ -211,7 +314,7 @@
             </nav>
         </header>
 
-        <!-- Right Side Panel (Toggleable Quick Access) -->
+        <!-- Right Side Panel (Toggleable Quick Access) - Slides in from right -->
         <div id="right-side-panel" class="fixed inset-y-0 right-0 w-72 bg-gray-900 bg-opacity-95 shadow-xl p-6 transform transition-transform duration-300 ease-in-out right-panel-hidden z-50">
             <!-- Close Button for the right panel -->
             <button id="close-right-panel-button" class="absolute top-4 right-4 p-2 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
@@ -221,7 +324,7 @@
             <h2 class="text-3xl font-extrabold text-blue-400 mb-8 mt-16">Quick Links & Info</h2>
 
             <div class="space-y-6">
-                <!-- Contact Information -->
+                <!-- Contact Information Section -->
                 <div class="flex flex-col gap-3">
                     <h3 class="text-xl font-semibold text-gray-200">Contact Us</h3>
                     <a href="tel:+1234567890" class="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors duration-200 group">
@@ -238,7 +341,7 @@
                     </a>
                 </div>
 
-                <!-- Social Media Links -->
+                <!-- Social Media Links Section -->
                 <div class="flex flex-col gap-3">
                     <h3 class="text-xl font-semibold text-gray-200">Follow Us</h3>
                     <div class="flex gap-4">
@@ -254,7 +357,7 @@
                     </div>
                 </div>
 
-                <!-- Quick Action Buttons -->
+                <!-- Quick Action Buttons Section -->
                 <div class="flex flex-col gap-3">
                     <h3 class="text-xl font-semibold text-gray-200">Actions</h3>
                     <a href="#join-form-section" class="btn-primary w-full animate-pulseOutline text-center">Join Our Community</a>
@@ -262,12 +365,12 @@
                 </div>
             </div>
         </div>
-        <!-- Overlay for mobile nav and right panel -->
+        <!-- Overlay for mobile nav and right panel (dims background and closes panel on click outside) -->
         <div id="mobile-nav-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
         <div id="right-panel-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
 
 
-        <!-- Hero Section -->
+        <!-- NEW: Hero Section - Prominent Call-to-Action -->
         <section id="hero-section" class="flex-grow flex flex-col justify-center items-center text-center py-20 px-4 section-hidden-anim">
             <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 animate-fadeInUp">
                 Transform Your Life with <span class="text-blue-400">Forge Fitness Hub</span>
@@ -280,7 +383,7 @@
             </a>
         </section>
 
-        <!-- About Us Section -->
+        <!-- NEW: About Us Section (Placeholder, but good for structure) -->
         <section id="about-section" class="py-16 px-4 md:px-8 bg-gray-900 section-hidden-anim">
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-4xl sm:text-5xl font-extrabold text-blue-400 mb-6">About Forge Fitness Hub</h2>
@@ -290,7 +393,7 @@
             </div>
         </section>
 
-        <!-- Our Services Section -->
+        <!-- NEW: Our Services Section -->
         <section id="services-section" class="py-16 px-4 md:px-8 section-hidden-anim">
             <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Our Services</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -315,21 +418,21 @@
                     <p class="text-gray-300">Expert dietary advice to complement your training and optimize results.</p>
                     <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Get Advice</a>
                 </div>
-                <!-- Service Card 4 -->
+                <!-- NEW SERVICE 4 -->
                 <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
                     <i class="fas fa-heartbeat text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
                     <h3 class="text-2xl font-bold text-gray-100 mb-2">Wellness & Recovery</h3>
                     <p class="text-gray-300">Dedicated zones for stretching, massage, and active recovery to support your overall well-being.</p>
                     <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Explore More</a>
                 </div>
-                <!-- Service Card 5 -->
+                <!-- NEW SERVICE 5 -->
                 <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
                     <i class="fas fa-child text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
                     <h3 class="text-2xl font-bold text-gray-100 mb-2">Youth Fitness Programs</h3>
                     <p class="text-gray-300">Fun and engaging fitness programs tailored for children and teenagers to build healthy habits.</p>
                     <a href="#contact-form-section" class="btn-primary mt-6 w-full text-center hover:animate-pulseOutline">Discover Programs</a>
                 </div>
-                <!-- Service Card 6 -->
+                <!-- NEW SERVICE 6 -->
                 <div class="bg-gray-800 bg-opacity-70 p-8 rounded-xl shadow-lg border-2 border-gray-700 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300 group">
                     <i class="fas fa-laptop-house text-5xl text-blue-400 mb-4 group-hover:animate-wiggle"></i>
                     <h3 class="text-2xl font-bold text-gray-100 mb-2">Online Coaching & Resources</h3>
@@ -339,12 +442,14 @@
             </div>
         </section>
 
-        <!-- Testimonials Section -->
+        <!-- NEW: Testimonials Section -->
         <section id="testimonials-section" class="py-16 px-4 md:px-8 bg-gray-900 section-hidden-anim">
             <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Hear From Our Members</h2>
-            <div class="max-w-3xl mx-auto relative overflow-hidden h-96">
+            <div class="max-w-3xl mx-auto relative overflow-hidden h-96"> <!-- Fixed height for carousel -->
                 <div id="testimonial-carousel-container" class="relative w-full h-full">
                     <!-- Testimonial Cards will be injected by JavaScript -->
+                    <!-- Example structure (initially hidden by JS) -->
+                    <!-- <div class="testimonial-card">...</div> -->
                 </div>
                 
                 <!-- Carousel Navigation Arrows -->
@@ -355,7 +460,7 @@
             <div id="testimonial-dots-container" class="carousel-dots"></div>
         </section>
 
-        <!-- Interactive BMI Calculator Section -->
+        <!-- NEW: Interactive BMI Calculator Section -->
         <section id="calculator-section" class="py-16 px-4 md:px-8 section-hidden-anim">
             <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-blue-400 mb-12">Fitness & BMI Calculator</h2>
             <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg mx-auto shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
@@ -373,7 +478,7 @@
                         </label>
                     </div>
 
-                    <!-- BMI Form Inputs -->
+                    <!-- BMI Form Inputs - now using exact Tailwind classes -->
                     <div class="form-group">
                         <input type="number" id="weight" placeholder="Weight (kg)"
                             class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
@@ -404,14 +509,14 @@
             </div>
         </section>
 
-        <!-- Join Gym Now Form -->
+        <!-- Existing: Join Gym Now Form -->
         <section id="join-form-section" class="flex-grow flex justify-center items-center py-16 px-4 section-hidden-anim">
             <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
                 <h1 class="text-4xl font-extrabold text-center mb-8 text-blue-300 drop-shadow-lg animate-popIn">
                     Join Our Gym
                 </h1>
                 <form id="joinForm" class="space-y-6">
-                    <!-- Join Form Inputs -->
+                    <!-- Join Form Inputs - now using exact Tailwind classes -->
                     <div class="form-group">
                         <input type="text" id="join-name" name="name" placeholder="Your Name"
                             class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
@@ -454,14 +559,14 @@
             </div>
         </section>
 
-        <!-- Contact Us Form Section -->
+        <!-- NEW: Contact Us Form Section -->
         <section id="contact-form-section" class="flex-grow flex justify-center items-center py-16 px-4 section-hidden-anim bg-gray-900">
             <div class="bg-gray-800 bg-opacity-70 border-2 border-gray-600 rounded-3xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-sm hover:scale-[1.01] hover:shadow-2xl transition-all duration-300">
                 <h1 class="text-4xl font-extrabold text-center mb-8 text-blue-300 drop-shadow-lg animate-popIn">
                     Contact Us
                 </h1>
                 <form id="contactForm" class="space-y-6">
-                    <!-- Contact Form Inputs -->
+                    <!-- Contact Form Inputs - now using exact Tailwind classes -->
                     <div class="form-group">
                         <input type="text" id="contact-name-input" name="contact-name" placeholder="Your Name"
                             class="w-full p-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" required>
@@ -505,18 +610,20 @@
 
     <!-- JavaScript for interactivity and animations -->
     <script>
-        // BACKEND_API_BASE_URL: This is the URL of your deployed backend server.
-        // Even when mocking success, it's good practice to keep this accurate for future development.
-        // IMPORTANT: Replace 'https://FFH-backend.mohsinkhan77812.replit.dev' with your ACTUAL Replit backend URL.
-        const BACKEND_API_BASE_URL = 'https://FFH-backend.mohsinkhan77812.replit.dev';
+        // *** IMPORTANT: REPLACE 'YOUR_RENDER_BACKEND_URL_HERE' WITH YOUR ACTUAL RENDER.COM BACKEND SERVICE URL ***
+        // Example: const BACKEND_API_BASE_URL = 'https://forge-fitness-hub-backend.onrender.com';
+        const BACKEND_API_BASE_URL = 'https://FFH-backend.mohsinkhan77812.replit.dev'; // DO NOT FORGET TO UPDATE THIS!
 
-        // Element Selections
+        // --- Element Selections ---
         const backgroundImages = [
-            'img/gym-bg-1.jpg',
-            'https://placehold.co/1920x1080/1A202C/E2E8F0?text=Dynamic+Gym+2',
-            'https://placehold.co/1920x1080/0F172A/FF4A52?text=Dynamic+Gym+3',
-            'https://placehold.co/1920x1080/2C3E50/EAEAEA?text=Dynamic+Gym+4'
+            'img/gym-bg-1.jpg', // Placeholder for actual images
+            // It's good practice to provide full URLs for images, especially if Vercel might not handle relative paths
+            'https://placehold.co/1920x1080/1A202C/E2E8F0?text=Dynamic+Gym+2', 
+            'https://placehold.co/1920x1080/0F172A/FF4A52?text=Dynamic+Gym+3', 
+            'https://placehold.co/1920x1080/2C3E50/EAEAEA?text=Dynamic+Gym+4'  
         ];
+
+        // Fallback placeholder images if original paths don't work (used inside initBackgroundSlider if paths fail)
         const placeholderBgImages = [
             'https://placehold.co/1920x1080/0F172A/00BFFF?text=Dynamic+Gym+1',
             'https://placehold.co/1920x1080/1A202C/E2E8F0?text=Dynamic+Gym+2',
@@ -544,7 +651,7 @@
         const navbarLinks = document.querySelectorAll('.navbar-link');
         const sectionHiddenAnimElements = document.querySelectorAll('.section-hidden-anim');
 
-        // Background Image Slider functionality
+        // --- Background Image Slider Functionality ---
         function initBackgroundSlider() {
             const setBackgroundImage = (url) => {
                 const img = new Image();
@@ -554,6 +661,7 @@
                 };
                 img.onerror = () => {
                     console.warn(`Failed to load ${url}, falling back to placeholder.`);
+                    // Fallback to placeholder if the specific image fails to load
                     backgroundSlider.style.backgroundImage = `url('${placeholderBgImages[currentBackgroundIndex % placeholderBgImages.length]}')`;
                     backgroundSlider.style.opacity = 1;
                 };
@@ -563,19 +671,21 @@
                 }, 1000);
             };
 
-            const initialImage = backgroundImages[0] || 'img/dumbel%20pic.jpg';
+            // Initial background (using your provided image as a fallback for the very first one if gym-bg-1.jpg doesn't exist)
+            const initialImage = backgroundImages[0] || 'img/dumbel%20pic.jpg'; // Your logo image, or placeholder
             setBackgroundImage(initialImage);
+
 
             const changeBackground = () => {
                 currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
-                const nextImageUrl = backgroundImages[currentBackgroundIndex];
+                const nextImageUrl = backgroundImages[currentBackgroundIndex]; // Use from backgroundImages array
                 setBackgroundImage(nextImageUrl);
             };
 
             setInterval(changeBackground, 5000);
         }
 
-        // Mobile Navigation Toggle
+        // --- Mobile Navigation Toggle Functionality ---
         function toggleMobileNav() {
             const isHidden = mobileNav.classList.contains('mobile-nav-hidden');
 
@@ -597,7 +707,7 @@
             }
         }
 
-        // Right Side Panel Toggle
+        // --- Right Side Panel Toggle Functionality ---
         function toggleRightPanel() {
             rightSidePanel.classList.toggle('right-panel-hidden');
             rightSidePanel.classList.toggle('right-panel-visible');
@@ -607,7 +717,7 @@
             }
         }
 
-        // Smooth Scrolling for Navigation Links
+        // --- Smooth Scrolling for Navigation Links ---
         function setupSmoothScroll() {
             navbarLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -642,7 +752,7 @@
              });
         }
 
-        // Scroll-Triggered Section Animations
+        // --- Scroll-Triggered Section Animations using IntersectionObserver ---
         function setupScrollAnimations() {
             const observerOptions = {
                 root: null,
@@ -664,7 +774,7 @@
             });
         }
 
-        // Testimonial Carousel Functionality
+        // --- Testimonial Carousel Functionality ---
         const testimonials = [
             {
                 quote: "Forge Fitness Hub transformed my perception of working out. The trainers are incredibly supportive and the community is like family!",
@@ -679,7 +789,7 @@
             {
                 quote: "From nutrition coaching to personal training, every aspect of Forge Fitness Hub is top-notch. I'm healthier and happier than ever!",
                 author: "— Emily D.",
-                image: "https://placehold.co/80x80/87CEEB/000000?text=ED"
+                image: "https://placehold.co/80x80/87CEEB/000000?text=ED" // Corrected to valid image URL
             },
             {
                 quote: "The atmosphere is always energetic and motivating. It's the perfect place to push your limits and achieve real results.",
@@ -765,7 +875,7 @@
             testimonialInterval = setInterval(nextTestimonial, 7000);
         }
 
-        // BMI Calculator Functionality
+        // --- BMI Calculator Functionality ---
         const weightInput = document.getElementById('weight');
         const heightCmInput = document.getElementById('height-cm');
         const heightFtInput = document.getElementById('height-ft');
@@ -774,7 +884,7 @@
         const heightFtInGroup = document.getElementById('height-ft-in-group');
         const heightUnitRadios = document.querySelectorAll('input[name="height-unit"]');
         const calculateBmiButton = document.getElementById('calculate-bmi-button');
-        const clearBmiButton = document.getElementById('clear-bmi-button');
+        const clearBmiButton = document.getElementById('clear-bmi-button'); // New clear button
         const bmiResultDiv = document.getElementById('bmi-result');
 
         function toggleHeightInputs() {
@@ -852,7 +962,7 @@
             bmiResultDiv.className = `mt-8 text-center text-2xl font-bold p-4 rounded-lg ${bgColorClass} animate-popIn`;
         }
 
-        // Helper function to display messages on form submission
+        // --- Helper function to display messages on form submission ---
         function showMessage(element, message, isSuccess) {
             element.textContent = message;
             element.classList.remove('hidden', 'bg-green-600', 'bg-red-600', 'text-green-200', 'text-red-200');
@@ -867,17 +977,19 @@
             }, 5000);
         }
 
-        // Event Listeners and Initializations (On Window Load)
+        // --- Event Listeners and Initializations (On Window Load) ---
         window.onload = function () {
             initBackgroundSlider();
 
+            // Mobile menu button and overlay listeners
             mobileMenuButton.addEventListener('click', toggleMobileNav);
-            closeMobileNavButton.addEventListener('click', toggleMobileNav);
-            mobileNavOverlay.addEventListener('click', toggleMobileNav);
+            closeMobileNavButton.addEventListener('click', toggleMobileNav); // Explicit close button
+            mobileNavOverlay.addEventListener('click', toggleMobileNav); // Close on overlay click
 
+            // Right panel toggle button and overlay listeners
             rightPanelToggleButton.addEventListener('click', toggleRightPanel);
             closeRightPanelButton.addEventListener('click', toggleRightPanel);
-            rightPanelOverlay.addEventListener('click', toggleRightPanel);
+            rightPanelOverlay.addEventListener('click', toggleRightPanel); // Close on overlay click
 
             setupSmoothScroll();
             setupScrollAnimations();
@@ -890,7 +1002,7 @@
             heightUnitRadios.forEach(radio => {
                 radio.addEventListener('change', toggleHeightInputs);
             });
-            toggleHeightInputs();
+            toggleHeightInputs(); // Initial call
             calculateBmiButton.addEventListener('click', calculateBMI);
             clearBmiButton.addEventListener('click', () => {
                 weightInput.value = '';
@@ -898,28 +1010,34 @@
                 heightFtInput.value = '';
                 heightInInput.value = '';
                 bmiResultDiv.classList.add('hidden');
-                document.querySelector('input[name="height-unit"][value="cm"]').checked = true;
-                toggleHeightInputs();
+                document.querySelector('input[name="height-unit"][value="cm"]').checked = true; // Reset to CM
+                toggleHeightInputs(); // Ensure correct fields are visible
             });
 
-            // Handle window resize for correct navbar state
+            // Handle window resize to ensure correct navbar state for desktop/mobile
             const handleResize = () => {
-                if (window.innerWidth >= 1024) {
-                    mobileNav.classList.remove('hidden', 'mobile-nav-hidden', 'mobile-nav-visible');
-                    mobileNav.classList.add('flex');
-                    mobileNavOverlay.classList.remove('is-active');
+                if (window.innerWidth >= 1024) { // Equivalent to Tailwind's 'lg' breakpoint
+                    // On large screens, ensure the mobile nav is hidden and main nav is flex
+                    mobileNav.classList.remove('hidden', 'mobile-nav-hidden', 'mobile-nav-visible'); // Clean up all mobile-specific classes
+                    mobileNav.classList.add('flex'); // Ensure flex display for desktop navbar
+                    mobileNavOverlay.classList.remove('is-active'); // Deactivate overlay
                 } else {
-                    mobileNav.classList.remove('flex');
+                    // On small screens, ensure the main nav is NOT flex (its position is fixed)
+                    mobileNav.classList.remove('flex'); // Remove desktop-specific flex display
+
+                    // If the mobile nav is NOT currently visible, make sure it's hidden and has its slide-out class
                     if (!mobileNav.classList.contains('mobile-nav-visible')) {
                         mobileNav.classList.add('hidden', 'mobile-nav-hidden');
                     }
+                    // If it IS visible, then the 'hidden' class should be absent, handled by toggleMobileNav
                 }
             };
 
+            // Run on initial load and whenever window is resized
             window.addEventListener('resize', handleResize);
-            handleResize();
+            handleResize(); // Initial check on load
 
-            // Form Submission Logics
+            // --- Form Submission Logics ---
 
             // Contact Form
             if (contactForm) {
@@ -930,9 +1048,8 @@
                     const subject = contactForm.querySelector('[name="contact-subject"]').value;
                     const message = contactForm.querySelector('[name="contact-message"]').value;
 
-                    // --- ORIGINAL BACKEND INTERACTION (COMMENTED OUT FOR DEMO) ---
-                    /*
                     try {
+                        // Use the dynamically set BACKEND_API_BASE_URL
                         const response = await fetch(`${BACKEND_API_BASE_URL}/api/contact`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -949,20 +1066,6 @@
                         console.error('Network or server error submitting contact form:', error);
                         showMessage(contactMessageDiv, 'Could not connect to the server. Please try again later.', false);
                     }
-                    */
-
-                    // --- DEMO SUCCESS SIMULATION (NEW CODE) ---
-                    console.log('Contact form submitted (simulated):', { name, email, subject, message });
-                    await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
-
-                    // Always show success for demo
-                    showMessage(contactMessageDiv, 'Message sent successfully (Demo)!', true);
-                    contactForm.reset(); // Clear the form
-
-                    // Optional: hide the message after a few seconds
-                    setTimeout(() => {
-                        contactMessageDiv.classList.add('hidden');
-                    }, 5000);
                 });
 
                 document.getElementById('clear-contact-form').addEventListener('click', () => {
@@ -982,9 +1085,8 @@
                     const email = joinForm.querySelector('[name="email"]').value;
                     const phone = joinForm.querySelector('[name="phone"]').value;
 
-                    // --- ORIGINAL BACKEND INTERACTION (COMMENTED OUT FOR DEMO) ---
-                    /*
                     try {
+                        // Use the dynamically set BACKEND_API_BASE_URL
                         const response = await fetch(`${BACKEND_API_BASE_URL}/api/join`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1001,20 +1103,6 @@
                         console.error('Network or server error submitting join form:', error);
                         showMessage(joinMessageDiv, 'Could not connect to the server. Please try again later.', false);
                     }
-                    */
-
-                    // --- DEMO SUCCESS SIMULATION (NEW CODE) ---
-                    console.log('Join form submitted (simulated):', { name, age, gender, locality, email, phone });
-                    await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
-
-                    // Always show success for demo
-                    showMessage(joinMessageDiv, 'Successfully joined (Demo)!', true);
-                    joinForm.reset(); // Clear the form
-
-                    // Optional: hide the message after a few seconds
-                    setTimeout(() => {
-                        joinMessageDiv.classList.add('hidden');
-                    }, 5000);
                 });
 
                 document.getElementById('clear-join-form').addEventListener('click', () => {
